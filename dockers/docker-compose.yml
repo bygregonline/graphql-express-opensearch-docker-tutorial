@@ -1,0 +1,128 @@
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
+    container_name: opensearch_container
+    environment:
+      - discovery.type=single-node
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx912m
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_USERNAME=${OPENSEARCH_USERNAME}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
+      - OPENSEARCH_NODE_NAME=${OPENSEARCH_NODE_NAME}
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    # ports:
+    #   - 9200:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    restart: always
+    networks:
+      local-network:
+        ipv4_address: 172.16.0.30
+
+  simple:
+      image: bygreg/opensearch-simple:v1
+      container_name: simple-container
+      volumes:
+          - opensearch-data:/root/opensearch-data
+          - nodejsapi-log:/root/nodejsapi-log
+
+
+      depends_on:
+      - opensearch
+      networks:
+        local-network:
+          ipv4_address: 172.16.0.60
+
+
+
+  python-data-loaders:
+    image: bygreg/python-data-loaders:v3
+    container_name: python-container
+    depends_on:
+      - opensearch
+    environment:
+      - PORT=9200
+      - INDEX_NAME=${INDEX_NAME}
+      - OPENSEARCH_USERNAME=${OPENSEARCH_USERNAME}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
+      - HOST=opensearch
+    restart: no
+    command: ./script.sh
+    networks:
+      local-network:
+        ipv4_address: 172.16.0.10
+
+
+
+
+  nodejs-api:
+    image: bygreg/nodejs-api:v1
+    container_name: nodejs-api
+    depends_on:
+      - opensearch
+      - python-data-loaders
+    environment:
+      - PORT=3000
+      - OPENSEARCH_HOST=http://opensearch:9200
+      - OPENSEARCH_USERNAME=${OPENSEARCH_USERNAME}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
+      - QUOTES_FILE=${QUOTES_FILE}
+      - INDEX_NAME=${INDEX_NAME}
+    restart: always
+    ports:
+      - 3000:3000
+    command: ./script.sh
+    networks:
+      local-network:
+        ipv4_address: 172.16.0.20
+
+
+
+
+
+  nodejs-graphql-api:
+    image: bygreg/nodejs-graphql-api:v1
+    container_name: nodejs-graphql-api
+    depends_on:
+      - opensearch
+      - python-data-loaders
+    environment:
+      - PORT=4000
+      - OPENSEARCH_HOST=http://opensearch:9200
+      - OPENSEARCH_USERNAME=${OPENSEARCH_USERNAME}
+      - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
+      - INDEX_NAME=${INDEX_NAME}
+    restart: always
+    ports:
+      - 4000:4000
+    command: sleep infinity
+    networks:
+      local-network:
+        ipv4_address: 172.16.0.80
+
+
+
+
+volumes:
+  opensearch-data:
+    driver: local
+  nodejsapi-log:
+    driver: local
+
+
+
+
+networks:
+  local-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/16
