@@ -42,6 +42,48 @@ docker exec -it simple-container /bin/bash
 ```
 
 
+## Test graphql
+
+* Using curl cmd
+
+```bash
+
+curl -s -X POST http://localhost:4000/graphql \
+  -H "Content-Type: application/json" \
+  -d  '{"query": "{ all { album,artist,year } }"}' |jq
+
+
+```
+
+![diagram](img/graph_sample.png)
+
+
+## Test rest
+
+* Using curl
+ <br/>
+
+```bash
+
+curl -s -XGET T http://localhost:3000/all/json \
+  -H "Content-Type: application/json"  |jq
+
+
+```
+
+![diagram](img/rest_curl.png)
+
+<br/>
+<br/>
+* Using browser
+
+<br/>
+
+![diagram](img/rest_browser.png)
+
+
+---
+
 ## Tear down service
 
 ```bash
@@ -69,11 +111,6 @@ docker compose down
 VOILA no milk needed
 
 
-
----
-
-if you want to stop
-docker compose down
 
 
 ---
