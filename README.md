@@ -1,41 +1,44 @@
 
-<h1>Docker compose for graphql and opensearch working sample </h1>
+![diagram](img/0_8hbC24tE4vpY72do.png)
+
 
 ---
 
-<b>Introduction</b>
+<h1>This project demonstrates how to integrate Node.js (Express and Apollo/GraphQL) with OpenSearch using Docker containers. </h1>
+---
 
-Welcome to the ultimate solution for setting up a secure artificial intelligence development environment—complete with your own database, machine learning manager, and distributed cloud-compatible file server—all in less than a minute. This repository was created with that goal in mind.
+## Features
+
+- **OpenSearch**: A container running OpenSearch to provide a powerful, scalable search engine.
+- **Node.js (Express)**: Provides RESTful APIs for querying data from OpenSearch.
+- **Node.js (Apollo/GraphQL)**: Utilizes GraphQL for more flexible querying of OpenSearch data.
+- **Python Data Loader**: Initializes OpenSearch with preloaded music data.
+- **Simple Linux Container**: Provides access to file systems and logs for debugging purposes.
+- **Docker Compose**: Orchestrates all the containers for seamless integration.
+
+## Quick Start
 
 
 
-The main idea behind this project is to simplify the setup process by providing a Docker Compose configuration that includes everything you need to get started quickly. With just a few commands, you’ll have an MLflow server running, utilizing MinIO for artifact storage and PostgreSQL as the database, all while ensuring data persistence through Docker volumes.
-
-<b>Features</b>
-
-	•	One-Click Setup: Build a graphlql environment set up asingle cmd command.
-
-
-Quick Start
-
-```
-
+```bash
 gh repo clone bygregonline/graphql-express-opensearch-docker-tutorial
 cd graphql-express-opensearch-docker-tutorial
+docker bu
 docker compose -p stack  up -d
 
 
-
 ```
 
 
 
-![diagram](img/0_8hbC24tE4vpY72do.png)
 
-Steps
 
-1. clone the repo
-2. docker compose up -d
+
+-----
+
+
+
+
 
 </br>
 </br>
@@ -52,4 +55,7 @@ docker compose down
 
 ---
 
-**NO SE COMO HACER QUE FUNCIONE EN WINDOWS NI ME INTERESA INVESTIGARLO
+** I DON'T KNOW HOW TO MAKE IT WORK ON WINDOWS AND I DON'T CARE TO INVESTIGATE IT.
+
+
+** A beerware software
