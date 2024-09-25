@@ -6,8 +6,13 @@ const port = process.env.PORT || 4000
 import  { Client } from "@opensearch-project/opensearch";
 const indexName = process.env.INDEX_NAME
 
-dotenv.config();
 
+
+dotenv.config();
+let url
+
+const playgroundEnabled = process.env.APOLLO_PLAYGROUND === 'true';
+const introspectionEnabled = process.env.APOLLO_INTROSPECTION === 'true';
 
 const client = new Client({
   node: process.env.OPENSEARCH_HOST,
@@ -18,27 +23,31 @@ const client = new Client({
 });
 
 
+console.log('opensearch host:', process.env.OPENSEARCH_HOST)
+console.log('opensearch username:', process.env.OPENSEARCH_USERNAME)
+console.log('opensearch password:', process.env.OPENSEARCH_PASSWORD)
+console.log('apollo playgroundEnabled:', playgroundEnabled)
+console.log('apollointrospectionEnabled:', introspectionEnabled)
+console.log(typeof playgroundEnabled);
+console.log(typeof introspectionEnabled);
 
 
-
-// Resolvers define the technique for fetching the types defined in the
-// schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
     all: async () => {
       try {
-        // Ejecutamos una consulta de búsqueda en OpenSearch para devolver todos los documentos
+
         const { body } = await client.search({
-          index: indexName,  // Nombre del índice en OpenSearch
+          index: indexName,
           body: {
             query: {
-              match_all: {}  // Coincide con todos los documentos en el índice
+              match_all: {}  /
             }
           },
-          size: 3000  // Tamaño máximo de canciones a devolver (ajústalo según tus necesidades)
+          size: 3000
         });
 
-        // Mapeamos los resultados para adaptarlos al esquema GraphQL
+
         return body.hits.hits.map(hit => hit._source);
       } catch (error) {
         console.error('Error al obtener todas las canciones:', error);
@@ -50,12 +59,55 @@ const resolvers = {
 };
 
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
+const CustomPlaygroundDisabler = () => {
+  return {
+    async serverWillStart() {
+      return {
+        async renderLandingPage() {
+          return {
+            html: '<h1>404 Not Found</h1>',
+          };
+        },
+      };
+    },
+  };
+};
 
 
-const { url } = await startStandaloneServer(server, { listen: { port: port } });
 
-console.log(`🚀 Server listening at: ${url}`);
+if (!playgroundEnabled) {
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: introspectionEnabled,
+    plugins: [
+      CustomPlaygroundDisabler()
+    ],
+  });
+   url  = await startStandaloneServer(server, { listen: { port: port } });
+}else{
+  console.log('playgroundEnabled:', playgroundEnabled)
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: introspectionEnabled,
+    plugins: [
+      CustomPlaygroundDisabler()
+    ],
+  });
+   url  = await startStandaloneServer(server, { listen: { port: port } });
+}
+
+
+
+
+// plugins: [
+//   playgroundEnabled
+//     ? ApolloServerPluginLandingPageDisabled()
+//     : ApolloServerPluginLandingPageGraphQLPlayground(),
+// ],
+
+
+
+console.log(`🚀 Server listening at: ${url.url}`);

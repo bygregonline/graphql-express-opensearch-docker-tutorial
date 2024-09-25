@@ -4,10 +4,12 @@
 
 ---
 
-<h1>This project demonstrates how to integrate Node.js (Express and Apollo/GraphQL) with OpenSearch using Docker containers. </h1>
+This project demonstrates how to integrate Node.js (Express and Apollo/GraphQL) with OpenSearch using Docker containers.
+
 ---
 
-## Features
+
+## Container used on this project
 
 - **OpenSearch**: A container running OpenSearch to provide a powerful, scalable search engine.
 - **Node.js (Express)**: Provides RESTful APIs for querying data from OpenSearch.
@@ -26,6 +28,25 @@ cd graphql-express-opensearch-docker-tutorial
 docker bu
 docker compose -p stack  up -d
 
+```
+
+
+## Extra
+
+Use a simple linux container to read lod and opensearch file
+
+```bash
+
+docker exec -it simple-container /bin/bash
+
+```
+
+
+## Tear down service
+
+```bash
+
+docker compose down
 
 ```
 
@@ -45,7 +66,9 @@ docker compose -p stack  up -d
 
 
 
-VOILA thats all you need to do
+VOILA no milk needed
+
+
 
 ---
 
@@ -55,7 +78,16 @@ docker compose down
 
 ---
 
-** I DON'T KNOW HOW TO MAKE IT WORK ON WINDOWS AND I DON'T CARE TO INVESTIGATE IT.
+SORRY I DON'T  REALLY KNOW HOW TO MAKE IT WORK ON WINDOWS AND I DON'T CARE TO INVESTIGATE IT.
 
 
-** A beerware software
+🍺🍺🍺🍺 beerware software
+
+------
+
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <phk@FreeBSD.ORG> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
+
+  ---

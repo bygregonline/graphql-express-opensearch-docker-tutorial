@@ -100,10 +100,12 @@ services:
       - OPENSEARCH_USERNAME=${OPENSEARCH_USERNAME}
       - OPENSEARCH_PASSWORD=${OPENSEARCH_PASSWORD}
       - INDEX_NAME=${INDEX_NAME}
+      - APOLLO_PLAYGROUND=${APOLLO_PLAYGROUND}
+      - APOLLO_INTROSPECTION=${APOLLO_INTROSPECTION}
     restart: always
     ports:
       - 4000:4000
-    command: sleep infinity
+    command:  ./script.sh
     networks:
       local-network:
         ipv4_address: 172.16.0.80
